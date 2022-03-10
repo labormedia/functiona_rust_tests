@@ -46,5 +46,6 @@ fn main() {
 
     let my_curry = my_new_instance.curry(lets_create_a_second_function, &mut MyStruct { my_string: " Pineapple".into(), my_uint32: 0 });
 
-    println!("Check D: {:#?}", my_curry())
+    println!("Check D: {:#?}", my_curry());
+    // println!("Check D: {:#?}", my_curry())
 }
