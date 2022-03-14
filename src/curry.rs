@@ -16,7 +16,7 @@ impl MyStruct {
         self
     }
 
-    fn curry(&'static mut self, my_function: fn(&mut MyStruct) -> &Self, my_struct: &mut MyStruct) -> impl FnOnce() -> &'static MyStruct {
+    fn curry<'a>(&'a mut self, my_function: fn(&mut MyStruct) -> &Self, my_struct: &mut MyStruct) -> impl FnOnce() -> &'a MyStruct {
         self.my_string = self.my_string.to_owned() + &my_struct.my_string;
         (|my_self| move || { my_function(my_self) })(self)
     }
@@ -31,21 +31,10 @@ mod tests {
     use super::*;
     #[test]
     fn tests() {
-        let my_new_instance= MyStruct {
+        let my_new_instance= &mut MyStruct {
             my_string: "World".into(),
             my_uint32: 42,
         };
-
-        // Making something 'static by intentionally leaking memory
-        //
-        // Step 1: put the thing you don't want to drop (free the memory for)
-        // inside a box.
-        let my_new_instance = Box::new(my_new_instance);
-
-        // Step 2: leak the box.
-        // This will cause an intentional memory leak
-        let my_new_instance = Box::leak(my_new_instance);
-
         println!("Check A: {:#?}", my_new_instance);
 
         println!("Check B: {:#?}", my_new_instance.my_associated_function("Hello", 65));
@@ -67,7 +56,7 @@ mod tests {
         let my_curry = my_new_instance.curry(lets_create_a_second_function, &mut MyStruct { my_string: " Pineapple".into(), my_uint32: 0 });
     
         println!("Check D: {:#?}", my_curry());
-        // println!("Check E: {:#?}", my_curry())
+        // println!("Check D: {:#?}", my_curry())
     }
 
  
