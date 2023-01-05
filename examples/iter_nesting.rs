@@ -1,4 +1,8 @@
-fn hourglassSum(arr: &[Vec<i32>]) -> i32 {
+use std::num::ParseIntError;
+
+use functional_tests::{apply, UnitTest};
+
+fn hourglass_sum(arr: &[Vec<i32>]) -> i32 {
     let arr_size = arr.len();
     let hg_last_index = 2;
     let hg = |cursor, data: &[Vec<i32>]| data[cursor..=cursor+hg_last_index]
@@ -22,4 +26,22 @@ fn hourglassSum(arr: &[Vec<i32>]) -> i32 {
         .collect::<Vec<Vec<Vec<i32>>>>();
     println!("{:?}", first_row_hg);
     0
+}
+
+fn parser<T>(data: &str) -> Box<[Vec<i32>]> {
+
+    Box::new(
+        [data
+        .split(' ')
+        .map( |x| {
+            let parsed = x.parse::<i32>();
+            parsed.unwrap()
+        })
+        .collect::<Vec<i32>>()
+        ]
+    )
+}
+
+fn main() {
+    let _a = apply(&"data/iter_nexting_a.txt", hourglass_sum, parser);
 }
