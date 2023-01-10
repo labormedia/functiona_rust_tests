@@ -1,47 +1,48 @@
-use std::num::ParseIntError;
+use functional_tests::apply;
 
-use functional_tests::{apply, UnitTest};
-
-fn hourglass_sum(arr: &[Vec<i32>]) -> i32 {
+fn hourglass_sum(arr: &Vec<Vec<i32>>) -> i32 {
     let arr_size = arr.len();
     let hg_last_index = 2;
-    let hg = |cursor, data: &[Vec<i32>]| data[cursor..=cursor+hg_last_index]
+    let hg = |cursor:(usize, usize), data: &[Vec<i32>]| data[0+cursor.0..=hg_last_index+cursor.0]
         .iter()
         .enumerate()
         .map( |(i,x)| 
-            x[0..=hg_last_index]
+            x[cursor.1..=hg_last_index+cursor.1]
                 .iter()
                 .enumerate()
-                .filter( |(j,_y)| {
-                    !( i == 1_usize && (j == &0_usize || j == &2_usize) )
-                })
+                // .filter( |(j,_y)| {
+                //     !( i == 1_usize && (j == &(0_usize) || j == &(2_usize)) )
+                // })
                 .map( |(_j,y)| *y)
                 .collect::<Vec<i32>>()
         )
         .collect::<Vec<Vec<i32>>>();
     let first_row_hg = (0..arr_size-hg_last_index)
         .map( |x| {
-            hg(x, arr)
+            (0..arr_size-hg_last_index).map( |y| hg((x,y), arr) ).collect::<Vec<Vec<Vec<i32>>>>()
         } )
-        .collect::<Vec<Vec<Vec<i32>>>>();
+        .collect::<Vec<Vec<Vec<Vec<i32>>>>>();
     println!("{:?}", first_row_hg);
     0
 }
 
-fn parser<T>(data: &str) -> Box<[Vec<i32>]> {
-
-    Box::new(
-        [data
-        .split(' ')
+fn parser<T>(data: &String) -> Vec<Vec<i32>> {
+        let a = data
+        .split('\n')
         .map( |x| {
-            let parsed = x.parse::<i32>();
-            parsed.unwrap()
+            x  
+                .split(' ')
+                .map( |y|
+                    y.parse::<i32>().unwrap()
+                )
+                
+                .collect::<Vec<_>>()
         })
-        .collect::<Vec<i32>>()
-        ]
-    )
+        .collect::<Vec<Vec<i32>>>();
+        println!("vectors: {:?}", a);
+        a
 }
 
 fn main() {
-    let _a = apply(&"data/iter_nexting_a.txt", hourglass_sum, parser);
+    let _a = apply(&"examples/data/iter_nesting_A.txt", hourglass_sum, parser::<Box<String>>);
 }

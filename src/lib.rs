@@ -1,20 +1,13 @@
 use std::fs;
 
-pub trait UnitTest {
-    type DataElement;
-    // type ReturnType;
-}
-
-pub fn apply<'a,T: 'a,U: 'a, W: 'a>(data_filepath: &'a str, instance: impl FnOnce(T) -> U, parser: impl FnOnce(&str) -> Box<T>) -> T 
+pub fn apply<'a,T: 'a,U: 'a>(data_filepath: &'a str, instance: impl Fn(&T) -> U, parser: impl Fn(&String) -> T) -> U
 where  
-    T: 'a,
+    T: 'a + std::convert::From<T>,
     U: 'a 
 {
     let raw_data = fs::read_to_string(data_filepath)
-        .expect("No input");
+        .expect("Input error");
     
-    let data: Box<T> = parser(&raw_data);
-
-    // instance(data);
-    *data
+    let collection: T = parser(&raw_data).into();
+    instance(&collection)
 }
