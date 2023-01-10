@@ -51,12 +51,25 @@ fn hourglass_sum<'a>(arr: &'a Vec<Vec<i32>>) -> i32 {
         } )
         .flatten()
         .collect::<Vec<i32>>();
-
+    let max_hg = (0..arr_size-hg_last_index)
+        .map( |x| {
+            (0..arr_size-hg_last_index)
+                .map( |y| 
+                    hg((x,y), arr)
+                        .flatten()
+                        .sum::<i32>()
+                )
+                // .flatten()
+                .collect::<Vec<i32>>()
+        } )
+        .flatten()
+        .max();
     println!("full_subset : {:?}", full_subset);
     println!("full_subset_flatten : {:?}", full_subset_flatten);
     println!("full_subset_flatten_sum : {:?}", full_subset_flatten_sum);
     println!("full_subset_flatten_sum_flatten : {:?}", full_subset_flatten_sum_flatten);
-    0
+    println!("max_hg : {:?}", max_hg);
+    max_hg.unwrap()
 }
 
 fn parser<T>(data: &String) -> Vec<Vec<i32>> {
