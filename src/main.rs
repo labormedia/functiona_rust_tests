@@ -23,7 +23,6 @@ impl MyStruct {
 }
 
 fn main() {
-
 }
 
 #[cfg(test)]
@@ -68,13 +67,13 @@ mod tests {
     
         println!("Check D: {:#?}", my_curry());
 
-        let some_other_instance = Box::new(an_instance);
+        // let some_other_instance = Box::new(an_instance);
 
-        let some_other_instance = Box::leak(some_other_instance);
+        // let some_other_instance = Box::leak(some_other_instance);
 
-        let my_curry = some_other_instance.curry(lets_create_a_function, &mut MyStruct { my_string: " Pineapple".into(), my_uint32: 0 });
+        // let my_curry = some_other_instance.curry(lets_create_a_function, &mut MyStruct { my_string: " Pineapple".into(), my_uint32: 0 });
 
-        println!("Check E: {:#?}", my_curry())
+        // println!("Check E: {:#?}", my_curry())s
     }
 
  
