@@ -1,5 +1,11 @@
+// In this schematic model, the parser expects a String which will convert to a generic type <T>
+// The <T> generic type coincides with the input of the instance implementation of the processing Fn(&T) -> U
+// the result of the implementation is within the bounds of the type <U>
+
 use functional_tests::apply;
 
+
+// The data matrix processor Fn(&T) -> U
 fn hourglass_sum<'a>(arr: &'a Vec<Vec<i32>>) -> i32 {
     let arr_size = arr.len();
     let hg_last_index = 2;
@@ -72,6 +78,8 @@ fn hourglass_sum<'a>(arr: &'a Vec<Vec<i32>>) -> i32 {
     max_hg.unwrap()
 }
 
+
+// The String parser Fn(&String) -> T
 fn parser<T>(data: &String) -> Vec<Vec<i32>> {
         let a = data
         .split('\n')
@@ -90,5 +98,9 @@ fn parser<T>(data: &String) -> Vec<Vec<i32>> {
 }
 
 fn main() {
+    // The apply instance pub fn apply<'a,T: 'a,U: 'a>(data_filepath: &'a str, instance: impl Fn(&T) -> U, parser: impl Fn(&String) -> T) -> U
+    // where  
+    // T: 'a + std::convert::From<T>,
+    // U: 'a 
     let _a = apply(&"examples/data/iter_nesting_A.txt", hourglass_sum, parser::<Box<String>>);
 }
